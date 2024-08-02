@@ -33,6 +33,10 @@ To view the code for a specific article, simply switch to the corresponding bran
 
 We welcome contributions and suggestions! Please open an issue or submit a pull request if you have any improvements or find any bugs.
 
+## 💰 You can help me by Donating
+
+[![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/emmanuelayinde)
+
 
 ## Contact
 
@@ -44,5 +48,6 @@ If you have any questions or feedback about the articles or the code samples, pl
 - Twitter: https://twitter.com/_emmanuelayinde
 
 I'd love to hear from you and discuss push notifications, FCM, or any related topics!
+
 
 Happy coding!
