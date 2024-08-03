@@ -1,23 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { NotificationDto } from './dto/notification.dto';
+import {
+  MultipleDeviceNotificationDto,
+  NotificationDto,
+  TopicNotificationDto,
+} from './dto/notification.dto';
 
 @Injectable()
 export class AppService {
-  async sendNotification(data: NotificationDto) {
+  async sendNotification({ token, title, body, icon }: NotificationDto) {
     try {
       const response = await admin.messaging().send({
-        token: data.token,
+        token,
         webpush: {
           notification: {
-            requireInteraction: true,
-            renotify: true,
-            tag: 'test-tag',
-            title: data.title,
-            body: data.body,
-            icon:
-              data.icon ||
-              'https://res.cloudinary.com/dsgye77pa/image/upload/v1719759345/pao/studywithpao.png',
+            title,
+            body,
+            icon,
           },
         },
       });
@@ -26,30 +25,57 @@ export class AppService {
       throw error;
     }
   }
-  async sendMobileNotification(data: NotificationDto) {
+
+  async sendNotificationToMultipleTokens({
+    tokens,
+    title,
+    body,
+    icon,
+  }: MultipleDeviceNotificationDto) {
     const message = {
-      data: {
-        score: '850',
-        time: '2:45',
-      },
       notification: {
-        title: data.title,
-        body: data.body,
-        imageUrl:
-          data.icon ||
-          'https://res.cloudinary.com/dsgye77pa/image/upload/v1719759345/pao/studywithpao.png',
+        title,
+        body,
+        icon,
       },
-      token: data.token,
+      tokens,
     };
 
-    admin
-      .messaging()
-      .send(message)
-      .then((response) => {
-        console.log('Successfully sent message:', { response });
-      })
-      .catch((error) => {
-        console.log('Error sending message:', { error });
-      });
+    try {
+      const response = await admin.messaging().sendMulticast(message);
+      console.log('Successfully sent messages:', response);
+      return {
+        success: true,
+        message: `Successfully sent ${response.successCount} messages; ${response.failureCount} failed.`,
+      };
+    } catch (error) {
+      console.log('Error sending messages:', error);
+      return { success: false, message: 'Failed to send notifications' };
+    }
+  }
+
+  async sendTopicNotification({
+    topic,
+    title,
+    body,
+    icon,
+  }: TopicNotificationDto) {
+    const message = {
+      notification: {
+        title,
+        body,
+        icon,
+      },
+      topic,
+    };
+
+    try {
+      const response = await admin.messaging().send(message);
+      console.log('Successfully sent message:', response);
+      return { success: true, message: 'Topic notification sent successfully' };
+    } catch (error) {
+      console.log('Error sending message:', error);
+      return { success: false, message: 'Failed to send topic notification' };
+    }
   }
 }

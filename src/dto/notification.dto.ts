@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger';
 
 export class NotificationDto {
   @ApiProperty({
@@ -24,4 +24,28 @@ export class NotificationDto {
     description: 'Notification Icon / Logo',
   })
   icon: string;
+}
+
+export class MultipleDeviceNotificationDto extends PickType(NotificationDto, [
+  'title',
+  'body',
+  'icon',
+]) {
+  @ApiProperty({
+    type: String,
+    description: 'Clients device token',
+  })
+  tokens: string[];
+}
+
+export class TopicNotificationDto extends PickType(NotificationDto, [
+  'title',
+  'body',
+  'icon',
+]) {
+  @ApiProperty({
+    type: String,
+    description: 'Subscription topic to send to',
+  })
+  topic: string;
 }
